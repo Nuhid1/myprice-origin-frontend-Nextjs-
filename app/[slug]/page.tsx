@@ -13,6 +13,7 @@ interface Props {
 // e.g. "iphone" → "iPhone", "dji" → "DJI", "oneplus" → "OnePlus"
 // Add more here if you add new brand slugs to the sitemap.
 const BRAND_OVERRIDES: Record<string, string> = {
+  // existing
   dji: "DJI",
   rtx: "RTX",
   oneplus: "OnePlus",
@@ -20,6 +21,10 @@ const BRAND_OVERRIDES: Record<string, string> = {
   airpods: "AirPods",
   playstation: "PlayStation",
   iphone: "iPhone",
+  // new
+  hp: "HP",
+  dell: "Dell",
+  asus: "ASUS",
 };
 
 // ── Slug → Human Readable Query ──────────────────────────────────────────────
