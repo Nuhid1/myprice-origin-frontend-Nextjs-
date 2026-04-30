@@ -42,12 +42,27 @@ function FeaturedProducts({
     }
   }, [onProductsLoaded]);
 
+  const SOURCE_NAME_TO_KEY: Record<string, string> = {
+    "Sumash Tech": "sumashtech",
+    "Ultra Technology": "ultratech",
+    "Sell Tech BD": "selltech",
+    "Computer Village": "computervillage",
+    "Gadget & Gear": "gadgetngear",
+    "Creatus Computer": "creatus",
+    StarTech: "startech",
+    Daraz: "daraz",
+    Pickaboo: "pickaboo",
+    BDStall: "bdstall",
+  };
+
   const filtered = featuredProducts.filter((p) => {
     const price = Number(p.price) || 0;
     const aboveMin = filterMin === 0 || price >= filterMin;
     const belowMax = filterMax === 0 || price <= filterMax;
+    const sourceKey =
+      SOURCE_NAME_TO_KEY[p.source?.name ?? ""] ?? p.source?.name;
     const inSource =
-      selectedSources.length === 0 || selectedSources.includes(p.source?.name);
+      selectedSources.length === 0 || selectedSources.includes(sourceKey);
     return aboveMin && belowMax && inSource;
   });
 
