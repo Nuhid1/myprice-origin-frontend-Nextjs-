@@ -1,0 +1,40 @@
+.wl-sidebar-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  background: #fdf2f8;
+  border: 1px solid #f9a8d4;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wl-sidebar-btn:hover {
+  background: #fce7f3;
+  border-color: #f472b6;
+}
+
+.wl-sidebar-icon {
+  font-size: 1rem;
+}
+
+.wl-sidebar-label {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #be185d;
+  text-align: left;
+}
+
+.wl-sidebar-badge {
+  background: #ec4899;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  min-width: 1.25rem;
+  text-align: center;
+}

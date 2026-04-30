@@ -1,0 +1,25 @@
+.store-filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.store-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.store-filter-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.store-filter-name {
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-transform: capitalize;
+}

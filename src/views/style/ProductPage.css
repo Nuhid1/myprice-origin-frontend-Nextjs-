@@ -1,0 +1,88 @@
+.pp-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 3rem;
+  min-height: 70vh;
+}
+
+.pp-back-btn {
+  align-self: flex-start;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.45rem 1rem 0.45rem 0.75rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  letter-spacing: 0.01em;
+}
+
+.pp-back-btn:hover {
+  background: #f5f3ff;
+  border-color: #667eea;
+  color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.pp-back-btn:active {
+  background: #ede9fe;
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.pp-card-wrap {
+  width: 100%;
+  max-width: 360px;
+}
+
+.pp-hint {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.pp-hint-link {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.pp-hint-link:hover {
+  text-decoration: underline;
+}
+
+.pp-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.pp-error {
+  color: #ef4444;
+}
+
+.pp-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: pp-spin 0.7s linear infinite;
+}
+
+@keyframes pp-spin {
+  to { transform: rotate(360deg); }
+}

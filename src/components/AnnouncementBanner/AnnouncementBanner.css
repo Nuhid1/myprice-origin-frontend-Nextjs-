@@ -1,0 +1,85 @@
+/* ── Banner ── */
+.ab-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #1a56db 0%, #1648c0 100%);
+  color: #fff;
+  padding: 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  animation: ab-slide-down 0.3s ease;
+}
+
+@keyframes ab-slide-down {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ab-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Badge ── */
+.ab-badge {
+  flex-shrink: 0;
+  background: #fff;
+  color: #1a56db;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* ── Text ── */
+.ab-text {
+  flex: 1;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.ab-link {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+.ab-link:hover {
+  opacity: 0.85;
+}
+
+/* ── Close ── */
+.ab-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ab-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .ab-text {
+    font-size: 12.5px;
+  }
+  .ab-banner {
+    padding: 10px 12px;
+  }
+}

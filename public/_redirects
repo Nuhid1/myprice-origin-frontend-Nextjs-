@@ -1,0 +1,8 @@
+# Force HTTPS
+http://* https://%{host}%{request_uri} 301
+
+# Redirect www to non-www
+https://www.mypricebd.com/* https://mypricebd.com/:splat 301
+
+# React SPA fallback — all other routes served by index.html
+/* /index.html 200

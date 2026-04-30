@@ -1,0 +1,86 @@
+.ph-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.ph-modal {
+  background: white;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.ph-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ph-modal-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+}
+
+.ph-modal-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  border-radius: 0.25rem;
+  transition: color 0.15s, background 0.15s;
+}
+
+/* Add to your existing CSS */
+.ph-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ph-tab {
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.15s;
+}
+
+.ph-tab:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.ph-tab--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.ph-modal-close:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+.ph-modal-body {
+  padding: 1.25rem;
+}
