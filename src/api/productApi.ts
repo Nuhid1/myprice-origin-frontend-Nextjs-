@@ -3,13 +3,6 @@ import { Product } from "../components/types/product";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const fetchProducts = async (query: string): Promise<Product[]> => {
-  const res = await axios.get(`${API_BASE_URL}/api/products/search`, {
-    params: { q: query },
-  });
-  return res.data;
-};
-
 export const fetchPriceHistory = async (productId: string, days = 7) => {
   const res = await axios.get(
     `${API_BASE_URL}/api/products/${productId}/history`,

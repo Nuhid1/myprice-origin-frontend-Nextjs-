@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
-import { useParams } from "next/navigation";
+import React, { useState, useMemo } from "react";
 
 import { Product } from "../components/types/product";
 import ProductCard from "../components/ProductCard/ProductCard";
@@ -16,7 +15,12 @@ import { useWishlist } from "../hooks/useWishlist";
 import { useSearch, SITES } from "../hooks/useSearch";
 import "./style/main.css";
 
-function MainPage() {
+interface Props {
+  initialProducts?: Product[];
+  initialQuery?: string;
+}
+
+function MainPage({ initialProducts = [], initialQuery = "" }: Props) {
   const [featuredPriceLow, setFeaturedPriceLow] = useState(0);
   const [featuredPriceHigh, setFeaturedPriceHigh] = useState(0);
   const [wishlistOpen, setWishlistOpen] = useState(false);
@@ -41,7 +45,7 @@ function MainPage() {
     handleSearch,
     handleCancel,
     handleToggleSource,
-  } = useSearch();
+  } = useSearch(initialProducts, initialQuery);
 
   const isLoading = loadingSites.length > 0; //boolean
   const hasSearched = submittedQuery !== ""; //boolean
@@ -102,29 +106,18 @@ function MainPage() {
     [],
   );
 
-  // ── Search query derived from URL slug ───────────────────
-  // Uses the same stripping pattern as formatQuery() in page.tsx.
-  // Order matters — longest/most specific suffixes must be removed first
-  // so partials like "-bd" don't leave leftover words in the search query.
-  const params = useParams();
-  const slug = params?.slug as string | undefined;
+  // ADD:
+  const hasActiveFilters =
+    submittedQuery !== initialQuery ||
+    filterMin > 0 ||
+    filterMax > 0 ||
+    selectedSources.length > 0;
 
-  const seoQuery = (slug || "")
-    .replace(/-price-in-bangladesh$/, "")
-    .replace(/-price-in-bd$/, "")
-    .replace(/-in-bangladesh$/, "")
-    .replace(/-in-bd$/, "")
-    .replace(/-bd$/, "")
-    .replace(/-/g, " ")
-    .trim();
-
-  // ✅ Single effect — no stale state issue
-  useEffect(() => {
-    if (seoQuery && !submittedQuery) {
-      setSearch(seoQuery);
-      handleSearch(seoQuery); // passes query directly, bypasses stale search state
-    }
-  }, [seoQuery, submittedQuery, setSearch, handleSearch]);
+  // Show client grid if:
+  // - On slug page (initialQuery is set) → always show products
+  // - On home page → only show after user searches or filters
+  const showClientGrid =
+    filteredProducts.length > 0 && (initialQuery !== "" || hasActiveFilters);
 
   return (
     <>
@@ -242,7 +235,8 @@ function MainPage() {
                   </div>
                 )}
 
-              {!hasSearched && !isLoading && (
+              {/* Only show FeaturedProducts on home page before any search */}
+              {!hasSearched && !isLoading && initialQuery === "" && (
                 <FeaturedProducts
                   filterMin={filterMin}
                   filterMax={filterMax}
@@ -258,7 +252,7 @@ function MainPage() {
                 />
               )}
 
-              {filteredProducts.length > 0 && (
+              {showClientGrid && (
                 <div
                   className="product-grid"
                   key={wishlist.map((w) => w.id).join(",")}

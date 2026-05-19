@@ -33,10 +33,6 @@ const ProductCard = ({
   const ExternalLinkIcon = () => <span className="link-icon">🔗</span>;
   const TrendingDownIcon = () => <span className="discount-icon">⬇️</span>;
 
-  const checkedAgo = product.scrapedAt
-    ? timeAgo(product.scrapedAt)
-    : "just now";
-
   // Add this utility at the top of ProductCard.tsx (or in a utils file)
   const BROKEN_DOMAINS = ["media.gadgetandgear.com"];
 
@@ -151,8 +147,11 @@ const ProductCard = ({
           View on {product.source.name}
         </a>
 
-        {checkedAgo && (
-          <p className="product-last-checked">🕐 Price checked {checkedAgo}</p>
+        {/* suppressHydrationWarning fixes timeAgo mismatch between server and client */}
+        {product.scrapedAt && (
+          <p className="product-last-checked" suppressHydrationWarning>
+            🕐 Price checked {timeAgo(product.scrapedAt)}
+          </p>
         )}
 
         {/* ── Price History ── */}

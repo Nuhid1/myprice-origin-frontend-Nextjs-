@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import MainPage from "@/src/views/MainPage";
+import { Product } from "@/src/components/types/product";
+import ProductGrid from "@/src/components/ProductGrid/ProductGrid";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 // Next.js 15+ passes params as a Promise, so we type it accordingly
@@ -57,6 +59,99 @@ function formatQuery(slug: string): string {
         word.charAt(0).toUpperCase() + word.slice(1),
     )
     .join(" ");
+}
+
+// ── Server-side product fetch ─────────────────────────────────────────────
+async function fetchInitialProducts(query: string): Promise<Product[]> {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const url = `${base}/api/products/stream?query=${encodeURIComponent(query)}`;
+
+  return new Promise((resolve) => {
+    const allProducts: any[] = [];
+    let buffer = "";
+    let resolved = false;
+
+    // ✅ Resolve with whatever we have after 5s — don't block page load longer
+    const timeout = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        console.log(
+          `[SSR] Timeout — returning ${allProducts.length} products early`,
+        );
+        resolve(allProducts);
+      }
+    }, 5000);
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok || !res.body) {
+          clearTimeout(timeout);
+          resolve([]);
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+
+        function read() {
+          reader
+            .read()
+            .then(({ done, value }) => {
+              if (resolved) return; // already resolved by timeout
+
+              if (done) {
+                clearTimeout(timeout);
+                resolved = true;
+                console.log(
+                  `[SSR] Stream done — ${allProducts.length} products`,
+                );
+                resolve(allProducts);
+                return;
+              }
+
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split("\n");
+              buffer = lines.pop() || "";
+
+              for (const line of lines) {
+                if (!line.startsWith("data:")) continue;
+                try {
+                  const data = JSON.parse(line.slice(5).trim());
+                  if (data.done) {
+                    clearTimeout(timeout);
+                    resolved = true;
+                    console.log(
+                      `[SSR] Done signal — ${allProducts.length} products`,
+                    );
+                    resolve(allProducts);
+                    return;
+                  }
+                  if (data.results?.length > 0) {
+                    allProducts.push(...data.results);
+                  }
+                } catch {}
+              }
+
+              read(); // continue reading
+            })
+            .catch(() => {
+              if (!resolved) {
+                resolved = true;
+                resolve(allProducts);
+              }
+            });
+        }
+
+        read();
+      })
+      .catch((e) => {
+        console.log(`[SSR] Error:`, e);
+        if (!resolved) {
+          resolved = true;
+          resolve([]);
+        }
+      });
+  });
 }
 
 // ── Server-side Metadata ─────────────────────────────────────────────────────
@@ -123,11 +218,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ── Page Component ───────────────────────────────────────────────────────────
-// This is a server component — it just renders the client component (MainPage).
-// We do NOT pass slug as a prop because MainPage is "use client" and already
-// reads the slug itself via useParams() from next/navigation.
-// All SEO logic lives above in generateMetadata — not inside MainPage.
-export default async function SlugPage() {
-  return <MainPage />;
+// ── Page ──────────────────────────────────────────────────────────────────
+
+// REPLACE only the SlugPage function — keep everything else (formatQuery, fetchInitialProducts, generateMetadata) exactly the same
+export default async function SlugPage({ params }: Props) {
+  const { slug } = await params;
+  const formattedQuery = formatQuery(slug);
+  const initialProducts = await fetchInitialProducts(formattedQuery);
+
+  return (
+    <>
+      {/* Google reads this — users cannot see it */}
+      <div className="seo-grid" aria-hidden="true">
+        <ProductGrid products={initialProducts} />
+      </div>
+
+      {/* Users see and interact with this */}
+      <MainPage
+        initialProducts={initialProducts}
+        initialQuery={formattedQuery}
+      />
+    </>
+  );
 }

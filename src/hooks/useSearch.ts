@@ -20,10 +20,13 @@ export const SITES = [
 const resultCache = new Map<string, { products: Product[]; ts: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
-export const useSearch = () => {
-  const [search, setSearch] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
+export const useSearch = (
+  initialProducts: Product[] = [],
+  initialQuery: string = "",
+) => {
+  const [products, setProducts] = useState<Product[]>(() => initialProducts); // ✅ lazy init
+  const [search, setSearch] = useState(() => initialQuery);
+  const [submittedQuery, setSubmittedQuery] = useState(() => initialQuery);
   const [loadingSites, setLoadingSites] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [filterMin, setFilterMin] = useState(0);
