@@ -67,7 +67,7 @@ async function fetchInitialProducts(query: string): Promise<Product[]> {
   const url = `${base}/api/products/stream?query=${encodeURIComponent(query)}`;
 
   return new Promise((resolve) => {
-    const allProducts: any[] = [];
+    const allProducts: Product[] = [];
     let buffer = "";
     let resolved = false;
 
