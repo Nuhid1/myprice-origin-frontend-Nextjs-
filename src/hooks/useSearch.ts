@@ -14,6 +14,7 @@ export const SITES = [
   "creatus",
   "sumashtech",
   "bdstall",
+  "nexus",
 ];
 
 // Module-level cache — survives re-renders, cleared on page refresh

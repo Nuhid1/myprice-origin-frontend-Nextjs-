@@ -19,6 +19,7 @@ const STORE_LABELS: Record<string, string> = {
   creatus: "Creatus Computer",
   sumashtech: "Sumash Tech",
   bdstall: "BDStall",
+  nexus: "Nexus",
 };
 
 function StoreFilter({

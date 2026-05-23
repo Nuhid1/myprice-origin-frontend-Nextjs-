@@ -13,6 +13,7 @@ export const SITES = [
   "ultratech",
   "creatus",
   "sumashtech",
+  "nexus",
   // "bdstall",        // ← removed, no live scraper
 ];
 
