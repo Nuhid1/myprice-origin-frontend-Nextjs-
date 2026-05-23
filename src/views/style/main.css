@@ -20,8 +20,8 @@
 /* Product Grid */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr); /* ← was repeat(1, 1fr) */
+  gap: 1rem; /* ← slightly tighter gap for mobile */
 }
 
 @media (min-width: 640px) {
@@ -115,3 +115,4 @@
     position: static;
   }
 }
+

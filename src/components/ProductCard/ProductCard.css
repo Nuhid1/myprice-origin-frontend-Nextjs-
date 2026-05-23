@@ -244,3 +244,84 @@
   background: #f5f3ff;
   border-color: #667eea;
 }
+
+@media (max-width: 639px) {
+  .product-image-wrapper {
+    height: 8rem;
+  }
+
+  .product-content {
+    padding: 0.5rem;
+  }
+
+  .product-name {
+    font-size: 0.75rem;
+    min-height: unset;
+    margin-bottom: 0.25rem;
+  }
+
+  .product-rating-wrapper {
+    margin-bottom: 0.25rem;
+  }
+
+  .rating-value,
+  .rating-reviews {
+    font-size: 0.65rem;
+  }
+
+  .product-seller {
+    font-size: 0.65rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .product-price {
+    font-size: 0.95rem;
+  }
+
+  .product-original-price {
+    font-size: 0.7rem;
+  }
+
+  .product-price-wrapper {
+    margin-bottom: 0.25rem;
+    gap: 0.25rem;
+  }
+
+  .product-shipping {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-link-button {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.25rem;
+    gap: 0.25rem;
+  }
+
+  .product-last-checked {
+    font-size: 0.62rem;
+    margin: 3px 0 5px;
+  }
+
+  .ph-toggle-btn {
+    font-size: 0.7rem;
+    padding: 6px 0;
+    margin-top: 6px;
+  }
+
+  .product-source-badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .product-discount-badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .product-wish-btn {
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.8rem;
+  }
+}
