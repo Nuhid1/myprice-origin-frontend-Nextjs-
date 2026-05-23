@@ -12,10 +12,9 @@
   flex-direction: column;
   gap: 1.5rem;
   position: sticky;
-  top: 5rem;
+  top: 4.5rem; /* sits below sticky search bar */
 }
 
-/* Shared across all filter sections */
 .filter-section {
   display: flex;
   flex-direction: column;

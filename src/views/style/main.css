@@ -78,6 +78,7 @@
 
   /* Show toggle button */
   .mobile-filter-toggle {
+     position: sticky;
     display: flex;
     align-items: center;
     gap: 0.5rem;

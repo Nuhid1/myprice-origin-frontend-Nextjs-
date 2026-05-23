@@ -10,6 +10,7 @@ import WishlistModal from "../components/WishlistModal/WishlistModal";
 import Layout from "../components/layout/Layout";
 import FeedbackButton from "../components/FeedbackButton/FeedbackButton";
 import AnnouncementBanner from "../components/AnnouncementBanner/AnnouncementBanner";
+import ScrollToTop from "../components/ScrollToTop/ScrollToTop";
 
 import { useWishlist } from "../hooks/useWishlist";
 import { useSearch, SITES } from "../hooks/useSearch";
@@ -122,6 +123,8 @@ function MainPage({ initialProducts = [], initialQuery = "" }: Props) {
   return (
     <>
       <FeedbackButton />
+
+      <ScrollToTop />
 
       <AnnouncementBanner />
 
