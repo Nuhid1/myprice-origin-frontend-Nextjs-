@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import MainPage from "@/src/views/MainPage";
 import { Product } from "@/src/components/types/product";
 import ProductGrid from "@/src/components/ProductGrid/ProductGrid";
+import { getHealthyBases, recordFailure, recordSuccess } from "@/src/api/lb";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 // Next.js 15+ passes params as a Promise, so we type it accordingly
@@ -63,30 +64,48 @@ function formatQuery(slug: string): string {
 
 // ── Server-side product fetch ─────────────────────────────────────────────
 async function fetchInitialProducts(query: string): Promise<Product[]> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const url = `${base}/api/products/stream?query=${encodeURIComponent(query)}`;
+  const backends = getHealthyBases();
 
+  // Try each healthy backend in order — stop at first success
+  for (const base of backends) {
+    const url = `${base}/api/products/stream?query=${encodeURIComponent(query)}`;
+    const result = await tryStreamFromBase(url, base);
+    if (result !== null) return result; // success
+  }
+
+  console.warn("[SSR] All backends failed — returning []");
+  return [];
+}
+
+// Isolated fetcher — returns null on failure so caller can failover
+async function tryStreamFromBase(
+  url: string,
+  base: string,
+): Promise<Product[] | null> {
   return new Promise((resolve) => {
     const allProducts: Product[] = [];
     let buffer = "";
     let resolved = false;
 
-    // ✅ Resolve with whatever we have after 5s — don't block page load longer
+    const done = (products: Product[] | null) => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeout);
+      resolve(products);
+    };
+
+    // 5s timeout — if OOM-slow, give up and try next backend
     const timeout = setTimeout(() => {
-      if (!resolved) {
-        resolved = true;
-        console.log(
-          `[SSR] Timeout — returning ${allProducts.length} products early`,
-        );
-        resolve(allProducts);
-      }
+      console.warn(`[SSR] Timeout on ${base}`);
+      recordFailure(base);
+      done(null); // signal failure to caller
     }, 5000);
 
     fetch(url)
       .then((res) => {
         if (!res.ok || !res.body) {
-          clearTimeout(timeout);
-          resolve([]);
+          recordFailure(base);
+          done(null);
           return;
         }
 
@@ -96,16 +115,13 @@ async function fetchInitialProducts(query: string): Promise<Product[]> {
         function read() {
           reader
             .read()
-            .then(({ done, value }) => {
-              if (resolved) return; // already resolved by timeout
+            .then(({ done: streamDone, value }) => {
+              if (resolved) return;
 
-              if (done) {
-                clearTimeout(timeout);
-                resolved = true;
-                console.log(
-                  `[SSR] Stream done — ${allProducts.length} products`,
-                );
-                resolve(allProducts);
+              if (streamDone) {
+                recordSuccess(base);
+                console.log(`[SSR] ${base} → ${allProducts.length} products`);
+                done(allProducts);
                 return;
               }
 
@@ -118,12 +134,11 @@ async function fetchInitialProducts(query: string): Promise<Product[]> {
                 try {
                   const data = JSON.parse(line.slice(5).trim());
                   if (data.done) {
-                    clearTimeout(timeout);
-                    resolved = true;
+                    recordSuccess(base);
                     console.log(
-                      `[SSR] Done signal — ${allProducts.length} products`,
+                      `[SSR] ${base} done — ${allProducts.length} products`,
                     );
-                    resolve(allProducts);
+                    done(allProducts);
                     return;
                   }
                   if (data.results?.length > 0) {
@@ -132,24 +147,20 @@ async function fetchInitialProducts(query: string): Promise<Product[]> {
                 } catch {}
               }
 
-              read(); // continue reading
+              read();
             })
             .catch(() => {
-              if (!resolved) {
-                resolved = true;
-                resolve(allProducts);
-              }
+              recordFailure(base);
+              done(null);
             });
         }
 
         read();
       })
       .catch((e) => {
-        console.log(`[SSR] Error:`, e);
-        if (!resolved) {
-          resolved = true;
-          resolve([]);
-        }
+        console.warn(`[SSR] Fetch error on ${base}:`, e);
+        recordFailure(base);
+        done(null);
       });
   });
 }
