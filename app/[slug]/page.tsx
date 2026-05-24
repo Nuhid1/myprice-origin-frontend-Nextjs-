@@ -3,6 +3,7 @@ import MainPage from "@/src/views/MainPage";
 import { Product } from "@/src/components/types/product";
 import ProductGrid from "@/src/components/ProductGrid/ProductGrid";
 import { getHealthyBases, recordFailure, recordSuccess } from "@/src/api/lb";
+import { notFound } from "next/navigation";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 // Next.js 15+ passes params as a Promise, so we type it accordingly
@@ -45,7 +46,8 @@ function formatQuery(slug: string): string {
     .replace(/-price-in-bangladesh$/, "") // e.g. "iphone-price-in-bangladesh"
     .replace(/-price-in-bd$/, "") // e.g. "samsung-mobile-price-in-bd"
     .replace(/-in-bangladesh$/, "") // e.g. "starlink-in-bangladesh"
-    .replace(/-in-bd$/, "") // e.g. "router-in-bd"
+    .replace(/-price-bd$/, "") // e.g. "samsung-mobile-price-bd"
+    .replace(/-in-bd$/, "")
     .replace(/-bd$/, "") // e.g. "best-phone-under-10000-bd"
     .replace(/-/g, " ") // convert remaining hyphens to spaces
     .trim();
@@ -237,10 +239,14 @@ export default async function SlugPage({ params }: Props) {
   const formattedQuery = formatQuery(slug);
   const initialProducts = await fetchInitialProducts(formattedQuery);
 
+  if (initialProducts.length === 0) {
+    notFound(); // returns proper 404 — fixes your 14 Soft 404s
+  }
+
   return (
     <>
       {/* Google reads this — users cannot see it */}
-      <div className="seo-grid" aria-hidden="true">
+      <div className="seo-grid">
         <ProductGrid products={initialProducts} />
       </div>
 

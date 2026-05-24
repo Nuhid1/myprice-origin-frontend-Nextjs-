@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 // Update this date whenever you add new URLs to the sitemap
-const SITE_UPDATED = new Date("2025-05-20");
+const SITE_UPDATED = new Date("2025-05-25");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
