@@ -34,7 +34,7 @@ export const useSearch = (
   const [filterMax, setFilterMax] = useState(0);
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [fromCache, setFromCache] = useState(false);
-  const esRef = useRef<EventSource | null>(null);
+  const esRef = useRef<(() => void) | null>(null);
 
   const scoreProducts = (rawProducts: Product[], query: string) => {
     const q = query.toLowerCase();
@@ -58,7 +58,7 @@ export const useSearch = (
       const query = (overrideQuery ?? search).trim();
       if (!query) return;
 
-      esRef.current?.close();
+      esRef.current?.();
       setProducts([]);
       setError("");
       setSubmittedQuery(query);
@@ -120,7 +120,7 @@ export const useSearch = (
   );
 
   const handleCancel = useCallback(() => {
-    esRef.current?.close();
+    esRef.current?.();
     esRef.current = null;
     setLoadingSites([]);
   }, []);
