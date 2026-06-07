@@ -3,6 +3,7 @@ import React from "react";
 import { Product } from "../types/product";
 import "./WishlistModal.css";
 import NotifyButton from "../NotifyButton/NotifyButton";
+import { getNextHealthyBase, recordFailure, recordSuccess } from "../../api/lb";
 
 interface WishlistModalProps {
   wishlist: Product[];
@@ -11,12 +12,58 @@ interface WishlistModalProps {
   onClose: () => void;
 }
 
+async function cancelAlert(productId: string) {
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return;
+
+    localStorage.removeItem(`notify:${productId}`);
+
+    const tried = new Set<string>();
+    while (true) {
+      const base = getNextHealthyBase();
+      if (!base || tried.has(base)) break;
+      tried.add(base);
+      try {
+        await fetch(`${base}/api/push/alert`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint: sub.endpoint, productId }),
+        });
+        recordSuccess(base);
+        return;
+      } catch (err) {
+        recordFailure(base);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to cancel alert for", productId, err);
+  }
+}
+
 function WishlistModal({
   wishlist,
   onRemove,
   onClear,
   onClose,
 }: WishlistModalProps) {
+  const handleRemove = async (productId: string) => {
+    const hasAlert = localStorage.getItem(`notify:${productId}`) === "active";
+    if (hasAlert) await cancelAlert(productId);
+    onRemove(productId);
+  };
+
+  const handleClear = async () => {
+    // cancel all active alerts before clearing
+    const activeAlerts = wishlist.filter(
+      (p) => localStorage.getItem(`notify:${p.id}`) === "active",
+    );
+
+    await Promise.allSettled(activeAlerts.map((p) => cancelAlert(p.id)));
+    onClear();
+  };
+
   return (
     <div className="wl-overlay" onClick={onClose}>
       <div className="wl-modal" onClick={(e) => e.stopPropagation()}>
@@ -74,7 +121,7 @@ function WishlistModal({
                     )}
                     <button
                       className="wl-remove-btn"
-                      onClick={() => onRemove(product.id)}
+                      onClick={() => handleRemove(product.id)}
                     >
                       ✕
                     </button>
@@ -83,7 +130,7 @@ function WishlistModal({
               ))}
             </div>
             <div className="wl-footer">
-              <button className="wl-clear-btn" onClick={onClear}>
+              <button className="wl-clear-btn" onClick={handleClear}>
                 🗑 Clear All
               </button>
             </div>

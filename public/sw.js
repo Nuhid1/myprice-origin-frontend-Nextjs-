@@ -1,4 +1,4 @@
-// public/sw.js
+// public/sw.js cannot be TypeScript.
 self.addEventListener("push", (e) => {
   const data = e.data.json();
   e.waitUntil(
