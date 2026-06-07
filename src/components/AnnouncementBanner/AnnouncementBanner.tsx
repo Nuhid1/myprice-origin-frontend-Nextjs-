@@ -20,16 +20,10 @@ export default function AnnouncementBanner() {
       <div className="ab-inner">
         <span className="ab-badge">NEW</span>
         <p className="ab-text">
-          MyPrice BD has moved to a new home!{" "}
-          <a
-            className="ab-link"
-            href="https://mypricebd.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit us at mypricebd.com
-          </a>{" "}
-          for the latest prices and deals. 🎉
+          🔔 Price Drop Alerts are here! Add products to your{" "}
+          <strong>Wishlist</strong> and hit <strong>Notify</strong> to get
+          alerted when the price drops. Use <strong>Filter → Wishlisted</strong>{" "}
+          to see all your saved products. 🎉
         </p>
         <button
           className="ab-close"

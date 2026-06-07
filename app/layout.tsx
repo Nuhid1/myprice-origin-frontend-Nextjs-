@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
+import ServiceWorkerRegister from "../src/components/ServiceWorkerRegister/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
   title: "MyPrice BD - Best Price Comparison in Bangladesh",
@@ -46,6 +47,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" />
       </head>
       <body>
+        <ServiceWorkerRegister />
         {children}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-C950VVBQEL"

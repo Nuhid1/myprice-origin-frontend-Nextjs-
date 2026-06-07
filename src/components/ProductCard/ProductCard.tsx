@@ -6,6 +6,7 @@ import { trackEvent } from "../../utils/analytics";
 import { timeAgo } from "../../utils/timeAgo";
 import ShareModal from "../ShareModal/ShareModal";
 import "./ProductCard.css";
+//import NotifyButton from "../NotifyButton/NotifyButton";
 
 interface ProductCardProps {
   product: Product;
@@ -82,6 +83,7 @@ const ProductCard = ({
         </div>
 
         <button
+          suppressHydrationWarning
           className={`product-wish-btn ${isWishlisted ? "wishlisted" : ""}`}
           onClick={(e) => {
             e.preventDefault();
@@ -199,6 +201,18 @@ const ProductCard = ({
             )}
           </>
         )}
+
+        {/* ── Notify on price drop ── 
+        {product.isStatic !== true && (
+          <NotifyButton
+            productId={product.id}
+            productName={product.name}
+            currentPrice={product.price}
+            site={product.source.name}
+            url={product.url}
+            variant="card"
+          />
+        )} */}
       </div>
     </div>
   );

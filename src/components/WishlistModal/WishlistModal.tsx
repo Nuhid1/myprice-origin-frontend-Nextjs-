@@ -2,6 +2,7 @@
 import React from "react";
 import { Product } from "../types/product";
 import "./WishlistModal.css";
+import NotifyButton from "../NotifyButton/NotifyButton";
 
 interface WishlistModalProps {
   wishlist: Product[];
@@ -61,6 +62,16 @@ function WishlistModal({
                     >
                       View
                     </a>
+                    {product.isStatic !== true && (
+                      <NotifyButton
+                        productId={product.id}
+                        productName={product.name}
+                        currentPrice={product.price}
+                        site={product.source.name}
+                        url={product.url}
+                        variant="wishlist"
+                      />
+                    )}
                     <button
                       className="wl-remove-btn"
                       onClick={() => onRemove(product.id)}
