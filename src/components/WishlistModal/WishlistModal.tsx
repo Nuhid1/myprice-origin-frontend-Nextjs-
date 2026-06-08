@@ -17,9 +17,7 @@ async function cancelAlert(productId: string) {
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
     if (!sub) return;
-
     localStorage.removeItem(`notify:${productId}`);
-
     const tried = new Set<string>();
     while (true) {
       const base = getNextHealthyBase();
@@ -55,11 +53,9 @@ function WishlistModal({
   };
 
   const handleClear = async () => {
-    // cancel all active alerts before clearing
     const activeAlerts = wishlist.filter(
       (p) => localStorage.getItem(`notify:${p.id}`) === "active",
     );
-
     await Promise.allSettled(activeAlerts.map((p) => cancelAlert(p.id)));
     onClear();
   };
@@ -73,7 +69,6 @@ function WishlistModal({
             ✕
           </button>
         </div>
-
         {wishlist.length === 0 ? (
           <div className="wl-empty">
             <p className="wl-empty-icon">🤍</p>
